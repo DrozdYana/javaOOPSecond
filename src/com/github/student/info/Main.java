@@ -1,9 +1,13 @@
 package com.github.student.info;
 
+import java.util.Arrays;
+
+import javax.swing.JOptionPane;
+
 public class Main {
 
 	public static void main(String[] args) {
-		
+
 		Student studentOne = new Student("Ivan", "Ivanov", 3.5, 15);
 		Student studentTwo = new Student("Petro", "Petrov", 3.8, 10);
 		Student studentThree = new Student("Evgen", "Petrov", 4.0, 5);
@@ -22,14 +26,31 @@ public class Main {
 		groupOne.findStudent("Petrov");
 		groupOne.findStudent("Netreba");
 		groupOne.findStudent("Kotov");
+		Student[] studentArrayTwo = new Student[0];
+		Group groupTwo = new Group("KA", 82, studentArrayTwo);
 		try {
 			groupOne.addStudent(studentTen);
+
+			int confirm = (JOptionPane.showConfirmDialog(null, "Would you like to add more students to the group", "Question",
+					JOptionPane.YES_NO_OPTION));
+			while (confirm == JOptionPane.YES_OPTION) {
+				groupTwo.addStudent();
+				confirm = (JOptionPane.showConfirmDialog(null, "Would you like to add more students to the group", "Question",
+						JOptionPane.YES_NO_OPTION));
+			}
 			groupOne.addStudent(studentEleven);
-		} catch (FullGroupException ex) {
+		} catch (FullGroupException | IncorrectInputException | IncorrectNameException ex) {
 			System.out.println(ex.getMessage());
 		}
 		System.out.println(groupOne.toString());
-
+		System.out.println(groupTwo.toString());
+		Student[] studentArrayGroup = groupOne.getStudent();
+		System.out.println("FINAL ARRAY" + Arrays.toString(studentArrayGroup));
+		Arrays.sort(studentArrayGroup);
+		System.out.print("Group journal: ");
+		for (Student student : studentArrayGroup) {
+			System.out.print(student.getLastName() + "; ");
+		}
 	}
 
 }

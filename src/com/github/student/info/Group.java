@@ -2,6 +2,8 @@ package com.github.student.info;
 
 import java.util.Arrays;
 
+import javax.swing.JOptionPane;
+
 public class Group {
 	private String groupName;
 	private int groupNumber;
@@ -39,12 +41,12 @@ public class Group {
 	}
 
 	public void findStudent(String lastName) {
-		String studentTemp="";
+		String studentTemp = "";
 
 		for (int i = 0; i < studentArray.length; i++) {
 
 			if (studentArray[i].getLastName() == lastName) {
-				studentTemp += studentArray[i]+"; ";
+				studentTemp += studentArray[i] + "; ";
 			}
 
 		}
@@ -58,9 +60,35 @@ public class Group {
 			System.arraycopy(studentArray, 0, studentArrayTemp, 0, studentArray.length);
 			studentArrayTemp[studentArrayTemp.length - 1] = student;
 			studentArray = studentArrayTemp;
-			System.out.println("I've added: " + student.toString());
+			System.out.println("I've added to the group " + groupName + "-" + groupNumber + ": " + student.toString());
 		} else
 			throw new FullGroupException();
+	}
+
+	private boolean stringChecker(String str) {
+		if (str.matches("[a-zA-Z]+$")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void addStudent() throws FullGroupException, IncorrectInputException, IncorrectNameException {
+		String str = JOptionPane.showInputDialog("Enter student's firstName and after coma lastName");
+		if ((str == null) || (str.split(",").length != 2)) {
+			throw new IncorrectInputException();
+		} else {
+			String[] strTemp = str.split(",");
+			String firstName = strTemp[0];
+			String lastName = strTemp[1];
+
+			if (!stringChecker(firstName) || !stringChecker(lastName)) {
+				throw new IncorrectNameException();
+			} else {
+				addStudent(new Student(firstName, lastName));
+			}
+		}
+
 	}
 
 	@Override

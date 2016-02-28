@@ -1,6 +1,6 @@
 package com.github.student.info;
 
-public class Student extends Human {
+public class Student extends Human implements Comparable {
 	private double success;
 	private int countOfAbsence;
 
@@ -8,6 +8,14 @@ public class Student extends Human {
 		super(firstName, lastName);
 		this.success = success;
 		this.countOfAbsence = countOfAbsence;
+	}
+
+	public Student(String firstName, String lastName) {
+		super(firstName, lastName);
+	}
+
+	public Student() {
+		super();
 	}
 
 	public double getSuccess() {
@@ -24,6 +32,22 @@ public class Student extends Human {
 
 	public void setCountOfAbsence(int countOfAbsence) {
 		this.countOfAbsence = countOfAbsence;
+	}
+
+	@Override
+	public int compareTo(Object object) {
+		Student student = (Student) object;
+		/*
+		 * May be one of the variants: if (this.getLastName().length() >
+		 * student.getLastName().length()) { return 1; } else if
+		 * (this.getLastName().length() < student.getLastName().length()) {
+		 * return -1; }
+		 */
+		int compare = this.getLastName().compareToIgnoreCase(student.getLastName());
+		if (compare != 0) {
+			return compare;
+		} else
+			return 0;
 	}
 
 	@Override
