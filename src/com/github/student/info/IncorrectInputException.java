@@ -1,6 +1,5 @@
 package com.github.student.info;
 
-import javax.swing.JOptionPane;
 
 public class IncorrectInputException extends Exception {
 

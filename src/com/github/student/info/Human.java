@@ -1,12 +1,15 @@
 package com.github.student.info;
 
-public class Human {
+import java.io.Serializable;
+
+public class Human implements Serializable{
 	private String firstName;
 	private String lastName;
 	private int age;
 	private double weight;
 	private boolean sex;
 	private String temperament;
+	private static final long serialVersionUID = 1L;
 
 	public Human(String firstName, String lastName, int age, double weight, boolean sex, String temperament) {
 		super();

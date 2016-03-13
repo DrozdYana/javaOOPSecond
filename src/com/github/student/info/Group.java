@@ -1,13 +1,24 @@
 package com.github.student.info;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
-public class Group {
+public class Group implements Serializable{
 	private String groupName;
 	private int groupNumber;
 	private Student[] studentArray = new Student[10];
+	private static final long serialVersionUID = 1L;
 
 	public Group(String groupName, int groupNumber, Student[] studentArray) {
 		super();
@@ -95,6 +106,91 @@ public class Group {
 	public String toString() {
 		return "Group [groupName=" + groupName + ", groupNumber=" + groupNumber + ", studentArray="
 				+ Arrays.toString(studentArray) + "]";
+	}
+
+	public void writeInFile(Student[] studentArrayResult,String fileName) {
+
+		try (PrintWriter pr = new PrintWriter(fileName)) {
+			for (Student student : studentArrayResult) {
+				pr.println(student.toString());
+			}
+
+		} catch (FileNotFoundException ex) {
+			System.out.println("ERROR WHILE FILE WRITING!!!");
+		}
+
+	}
+
+	public void readFromFile(String fileName) throws IncorrectFileStudent, FullGroupException {
+		StringBuilder sb = new StringBuilder();
+		try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+			String lineSeparator = System.getProperty("line.separator");
+			String line = "";
+
+			System.out.println();
+			for (; (line = reader.readLine()) != null;) {
+				sb.append(line);
+				sb.append(lineSeparator);
+			}
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println("Wasn't able to read file");
+
+		}
+
+		String[] strArray = sb.toString().split("\n");
+		String[] strArrayCorrect = new String[strArray.length];
+
+		for (int i = 0; i < strArray.length; i++) {
+			if (strArray[i].startsWith("Student")) {
+				strArrayCorrect[i] = strArray[i].replaceAll("Student \\[", "").replaceAll("\\]", "");
+				if (strArrayCorrect[i].contains("firstName") && strArrayCorrect[i].contains("lastName")
+						&& strArrayCorrect[i].contains("success") && strArrayCorrect[i].contains("countOfAbsence")) {
+					String firstName = strArrayCorrect[i].substring(strArrayCorrect[i].indexOf("firstName=") + 10,
+							strArrayCorrect[i].indexOf(", lastName"));
+
+					String lastName = strArrayCorrect[i].substring(strArrayCorrect[i].indexOf("lastName=") + 9,
+							strArrayCorrect[i].indexOf(", success"));
+
+					String success = strArrayCorrect[i].substring(strArrayCorrect[i].indexOf("success=") + 8,
+							strArrayCorrect[i].indexOf(", countOfAbsence"));
+					String countOfAbsence = strArrayCorrect[i]
+							.substring(strArrayCorrect[i].indexOf("countOfAbsence=") + 15);
+
+					addStudent(new Student(firstName, lastName, Double.parseDouble(success),
+							Integer.parseInt(countOfAbsence)));
+
+				} else {
+					throw new IncorrectFileStudent();
+				}
+
+			} else {
+				throw new IncorrectFileStudent();
+			}
+		}
+
+	}
+
+	public void writeAnObjectStudent(Student[] studentArrayResult, String fileName) {
+		Group group=new Group(this.groupName,this.groupNumber,studentArrayResult);
+		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(fileName))) {
+			output.writeObject(group);
+		} catch (IOException e) {
+			System.out.println("Can't save group to a file !!!");
+		}
+	}
+
+	public Group readAnObjectStudent(String fileName) {
+		Group group=new Group(this.groupName,this.groupNumber,null);
+		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(fileName))) {
+			
+			group = (Group) input.readObject();
+			
+			this.setStudent(studentArray);
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("Can't read a Group from file");
+		}
+		return group;
 	}
 
 }

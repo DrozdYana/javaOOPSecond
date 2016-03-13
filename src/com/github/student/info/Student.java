@@ -1,8 +1,11 @@
 package com.github.student.info;
 
-public class Student extends Human implements Comparable {
+import java.io.Serializable;
+
+public class Student extends Human implements Comparable,Serializable {
 	private double success;
 	private int countOfAbsence;
+	private static final long serialVersionUID = 1L;
 
 	public Student(String firstName, String lastName, double success, int countOfAbsence) {
 		super(firstName, lastName);
@@ -52,7 +55,7 @@ public class Student extends Human implements Comparable {
 
 	@Override
 	public String toString() {
-		return "Student [firstName=" + getFirstName() + ", lastName=" + getLastName() + " success=" + success
+		return "Student [firstName=" + getFirstName() + ", lastName=" + getLastName() + ", success=" + success
 				+ ", countOfAbsence=" + countOfAbsence + "]";
 	}
 
