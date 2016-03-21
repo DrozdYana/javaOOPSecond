@@ -10,17 +10,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 public class Group implements Serializable{
 	private String groupName;
 	private int groupNumber;
-	private Student[] studentArray = new Student[10];
+	private ArrayList<Student> studentArray = new ArrayList<>();
 	private static final long serialVersionUID = 1L;
 
-	public Group(String groupName, int groupNumber, Student[] studentArray) {
+	public Group(String groupName, int groupNumber, ArrayList<Student> studentArray) {
 		super();
 		this.studentArray = studentArray;
 		this.groupName = groupName;
@@ -43,21 +43,21 @@ public class Group implements Serializable{
 		this.groupNumber = groupNumber;
 	}
 
-	public Student[] getStudent() {
+	public ArrayList<Student> getStudent() {
 		return studentArray;
 	}
 
-	public void setStudent(Student[] studentArray) {
+	public void setStudent(ArrayList<Student> studentArray) {
 		this.studentArray = studentArray;
 	}
 
 	public void findStudent(String lastName) {
 		String studentTemp = "";
 
-		for (int i = 0; i < studentArray.length; i++) {
+		for (Student student:studentArray) {
 
-			if (studentArray[i].getLastName() == lastName) {
-				studentTemp += studentArray[i] + "; ";
+			if (student.getLastName() == lastName) {
+				studentTemp += student + "; ";
 			}
 
 		}
@@ -66,11 +66,8 @@ public class Group implements Serializable{
 	}
 
 	public void addStudent(Student student) throws FullGroupException {
-		if (studentArray.length < 10) {
-			Student[] studentArrayTemp = new Student[studentArray.length + 1];
-			System.arraycopy(studentArray, 0, studentArrayTemp, 0, studentArray.length);
-			studentArrayTemp[studentArrayTemp.length - 1] = student;
-			studentArray = studentArrayTemp;
+		if (studentArray.size() < 10) {
+			studentArray.add(student);
 			System.out.println("I've added to the group " + groupName + "-" + groupNumber + ": " + student.toString());
 		} else
 			throw new FullGroupException();
@@ -105,10 +102,10 @@ public class Group implements Serializable{
 	@Override
 	public String toString() {
 		return "Group [groupName=" + groupName + ", groupNumber=" + groupNumber + ", studentArray="
-				+ Arrays.toString(studentArray) + "]";
+				+ studentArray + "]";
 	}
 
-	public void writeInFile(Student[] studentArrayResult,String fileName) {
+	public void writeInFile(ArrayList<Student> studentArrayResult,String fileName) {
 
 		try (PrintWriter pr = new PrintWriter(fileName)) {
 			for (Student student : studentArrayResult) {
@@ -171,7 +168,7 @@ public class Group implements Serializable{
 
 	}
 
-	public void writeAnObjectStudent(Student[] studentArrayResult, String fileName) {
+	public void writeAnObjectStudent(ArrayList<Student> studentArrayResult, String fileName) {
 		Group group=new Group(this.groupName,this.groupNumber,studentArrayResult);
 		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(fileName))) {
 			output.writeObject(group);
